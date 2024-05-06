@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <limits>
+#include <algorithm>
 using namespace std;
 
 struct Product
@@ -34,6 +35,39 @@ void getProducts()
     {
         cout << "- " << p.name << " " << p.quantity << " unidades a R$ " << p.price << " cada." << endl;
     }    
+}
+
+void removeProductByName(string& name, vector<Product>& products)
+{
+    products.erase(
+      remove_if(
+        products.begin(),
+        products.end(),
+        [&name](const Product& p) { return p.name == name; }
+      ),
+      products.end()
+    );
+}
+
+void updateQuantityProduct(int& quantity, string& name, vector<Product>& products)
+{
+  for(Product& p: products)
+  {
+    if (p.name == name)
+    {
+      p.quantity = quantity;
+    }
+  }
+}
+
+string calculateTotalStockValue(vector<Product>& products)
+{
+  float calc = 0;
+  for (Product p: products)
+  {
+    calc += p.price * p.quantity;
+  }
+  return "Valor total: " + to_string(calc);
 }
 
 int main()
@@ -79,15 +113,21 @@ int main()
       }
       else if (option == 2)
       {
-        continue;
+        cout << "Nome do Produto a ser removido: ";
+        cin >> name;
+        removeProductByName(name, products);
       }
       else if (option == 3)
       {
-        continue;
+        cout << "Nome do Produto a ser atualizado: ";
+        cin >> name;
+        cout << "Quantidade a ser atualizada: ";
+        cin >> quantity;
+        updateQuantityProduct(quantity, name, products);
       }
       else if (option == 4)
       {
-        continue;
+        cout << calculateTotalStockValue(products);
       }
       else if (option == 5)
       {
@@ -96,7 +136,8 @@ int main()
       }
       else if (option == 6)
       {
-        continue;
+        cout << "Até mais!" << endl;
+        break;
       }
       else
       {
